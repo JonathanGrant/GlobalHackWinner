@@ -76,7 +76,8 @@ var AFrameScene = React.createClass({
       [1,1,0,0,0,0,0,0,1],
       [1,1,1,0,1,1,0,2,1],
       [1,1,1,1,1,1,1,1,1]
-      ]
+      ],
+      restart: false
     }
   },
   aStarCreateGrid: function() {
@@ -187,7 +188,17 @@ var AFrameScene = React.createClass({
     return neighbors;
   },
   aStarStep: function(searchGrid, start, goal) {
-    console.log("step", this.state)
+    if(this.state.restart) {
+        var sg = this.aStarCreateGrid()
+        this.setState({
+            openList: [sg[7][7]],
+            closedList: [],
+            path: null,
+            restart: false
+        })
+        setTimeout(this.aStarStep, 1000, sg, sg[7][7], sg[1][1])
+        return
+    }
     if(!this.state.openList) {
         setTimeout(this.aStarStep, 1000, searchGrid, searchGrid[7][7], searchGrid[1][1])
         return
@@ -353,12 +364,25 @@ var AFrameScene = React.createClass({
     }
     return grid
   },
+  restartAStar: function() {
+    if(!this.state.path) {
+        this.setState({restart: true})
+    } else {
+        var sg = this.aStarCreateGrid()
+        this.setState({
+            openList: [sg[7][7]],
+            closedList: [],
+            path: null
+        })
+        setTimeout(this.aStarStep, 1000, sg, sg[7][7], sg[1][1])
+    }
+  },
   render: function() {
     console.log(this.state)
     // var sg = this.aStarCreateGrid()
     // var path = this.aStarSearch(sg, sg[7][7], sg[1][1])
     return (
-      <a-scene>
+      <a-scene onMouseDown={this.restartAStar}>
         <Camera />
         <Sky />
         {this.drawCurrentGrid()}
