@@ -71,7 +71,7 @@ var Page = React.createClass({
         } else {
             return (
                 <div>
-                    Submitted! Thank you :) {(this.state.shelterName.length > 0) ? this.state.shelterName : "unknown shelter"} with {this.state.numBeds} beds and {this.state.numChairs} chairs.
+                    Submitted! Thank you :) {(this.state.shelterName != "") ? this.state.shelterName : "unknown shelter"} with {this.state.numBeds} beds and {this.state.numChairs} chairs.
                 </div>
                 )
         }
