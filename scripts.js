@@ -182,7 +182,7 @@ var AFrameScene = React.createClass({
     }
     return neighbors;
   },
-  drawGrid: function() {
+  drawGrid: function(path) {
     var grid = []
     for (var y = 0; y < this.state.grid.length; y++) {
         var row = []
@@ -195,7 +195,17 @@ var AFrameScene = React.createClass({
             } else if(this.state.grid[y][x]==3) {
                 row.push(<GoalSphere pos={pos} radius="0.25" />)
             } else {
-                row.push(null)
+                var partOfPath = false
+                for(var i = 0; i < path.length; i++) {
+                    if(path[i].x == x && path[i].y == y) {
+                        row.push(<GhostSphere pos={pos} radius="0.2" theColor="purple"/>)
+                        partOfPath = true
+                        break
+                    }
+                }
+                if(!partOfPath) {
+                    row.push(null)
+                }
             }
             grid.push(row)
         }
@@ -204,13 +214,12 @@ var AFrameScene = React.createClass({
   },
   render: function() {
     var sg = this.aStarCreateGrid()
-    // console.log(sg)
-    console.log(this.aStarSearch(sg, sg[3][3], sg[1][1]))
+    var path = this.aStarSearch(sg, sg[3][3], sg[1][1])
     return (
       <a-scene>
         <Camera />
         <Sky />
-        {this.drawGrid()}
+        {this.drawGrid(path)}
       </a-scene>)
   }
 })
