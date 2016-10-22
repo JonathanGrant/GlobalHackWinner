@@ -7,6 +7,7 @@ var ShelterForm = React.createClass({
 			occupiedBeds: 0,
 			maxBedCapacity: 0,
 			shelterName: '',
+			editMode: true,
             programTypes: [{text: 'Permanent Supportive Housing', value: 'permanent'}, {text: 'Rapid Rehousing', value: 'rapid'}],
             peopleTypes: [{text: 'Everyone', value: 'e'}, {text: 'Adult Men', value: 'm'}, {text: 'Youth', value: 'y'}, {text: 'Abused Women', value: 'w'}]
 		}
@@ -39,11 +40,16 @@ var ShelterForm = React.createClass({
 	//When the user clicks the submit button, pass the current values
 	//Sub points to the sub in the ShelterForm tag
 	submitShelter: function(){
+		this.setState({editMode: false})
 		this.props.sub(this.state.shelterName, this.state.occupiedBeds, this.state.maxBedCapacity)
 	},
 
     drawOption: function(x) {
         return (<option key={x.value} value={x.value}>{x.text}</option>)
+    },
+
+    setEditMode: function(){
+    	this.setState({editMode: true})
     },
 
 	render: function(){
@@ -70,7 +76,7 @@ var ShelterForm = React.createClass({
 
                 <br />
 				<button onClick={this.addOccupant}>-</button>
-				You have {this.state.occupiedBeds} beds and {maxBedCapacity-this.state.occupiedBeds} available beds.
+				You have {this.state.occupiedBeds} beds and {this.state.maxBedCapacity-this.state.occupiedBeds} available beds.
 				<button onClick={this.removeOccupant}>+</button>
 
 				<br />
@@ -87,6 +93,7 @@ var Page = React.createClass({
 	getInitialState: function(){
 		return {
 			submitClicked: false,
+			editMode: true,
 			shelterName: "",
 			occupiedBeds: 0,
 			maxBedCapacity: 0,
@@ -97,14 +104,15 @@ var Page = React.createClass({
 	whenSubmitClicked: function(shelterName, occupiedBeds, maxBedCapacity){
 		this.setState({
 			submitClicked: true,
+			editMode: false;
 			shelterName: shelterName,
 			occupiedBeds: occupiedBeds,
-			maxBedCapacity: 0,
+			maxBedCapacity: maxBedCapacity,
 		})
 	},
 
 	render: function(){
-		if(!this.state.submitClicked){
+		if(!this.state.submitClicked || this.state.editMode){
 			return(
 				<ShelterForm sub={this.whenSubmitClicked} />
 			)
@@ -115,7 +123,9 @@ var Page = React.createClass({
 				<div>
 					Submitted.
 					<br />
-					{(this.state.shelterName.length > 0) ? this.state.shelterName: "Unnamed shelter"} has {this.state.occupiedBeds}/{maxBedCapacity} beds.
+					{(this.state.shelterName.length > 0) ? this.state.shelterName: "Unnamed shelter"} has {this.state.occupiedBeds}/{this.state.maxBedCapacity} beds.
+
+					<button onClick={this.setEditMode}>Edit</button>
 				</div>
 			)
 		}
