@@ -8,7 +8,6 @@ var Camera = React.createClass({
     return (
         <a-camera position={this.state.pos}>
             <a-cursor color="#FF0000"></a-cursor>
-            <a-animation attribute="position" from="0 0 0" to="0 5 0" duration="1000"></a-animation>
         </a-camera>
         )
   }
@@ -23,10 +22,19 @@ var Cube = React.createClass({
   }
 })
 
-var Sphere = React.createClass({
+var PlayerSphere = React.createClass({
   render: function() {
     return (
         <a-sphere position={this.props.pos} radius={this.props.radius} color={this.props.theColor}>
+        </a-sphere>
+        )
+  }
+})
+
+var GhostSphere = React.createClass({
+  render: function() {
+    return (
+        <a-sphere material="opacity:0.1" position={this.props.pos} radius={this.props.radius} color={this.props.theColor}>
         </a-sphere>
         )
   }
@@ -47,20 +55,39 @@ var Sky = React.createClass({
 })
 
 var AFrameScene = React.createClass({
+  getInitialState() {
+    return {
+      grid: [
+      [1,0,1],
+      [1,2,1],
+      [1,0,1]
+      ]
+    }
+  },
+  drawGrid: function() {
+    var grid = []
+    for (var y = 0; y < this.state.grid.length; y++) {
+        var row = []
+        for (var x = 0; x < this.state.grid[y].length; x++) {
+            var pos = (x-1) + " " + (y-1) + " -10"
+            if(this.state.grid[y][x] == 1) {
+                row.push(<Cube pos={pos} />)
+            } else if(this.state.grid[y][x]==2) {
+                row.push(<PlayerSphere pos={pos} radius="0.25" theColor="black"/>)
+            } else {
+                row.push(null)
+            }
+            grid.push(row)
+        }
+    }
+    return grid
+  },
   render: function() {
     return (
       <a-scene>
         <Camera />
         <Sky />
-        <Cube pos="1 5 -4" />
-        <Cube pos="1 6 -4" />
-        <Cube pos="1 4 -4" />
-        <Cube pos="0 6 -4" />
-        <Sphere pos="0 5 -4" radius="0.25" theColor="purple"/>
-        <Cube pos="0 4 -4" />
-        <Cube pos="-1 5 -4" />
-        <Cube pos="-1 6 -4" />
-        <Cube pos="-1 4 -4" />
+        {this.drawGrid()}
       </a-scene>)
   }
 })
