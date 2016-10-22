@@ -31,6 +31,15 @@ var PlayerSphere = React.createClass({
   }
 })
 
+var GoalSphere = React.createClass({
+  render: function() {
+    return (
+        <a-sphere position={this.props.pos} radius={this.props.radius} color="green">
+        </a-sphere>
+        )
+  }
+})
+
 var GhostSphere = React.createClass({
   render: function() {
     return (
@@ -58,9 +67,11 @@ var AFrameScene = React.createClass({
   getInitialState() {
     return {
       grid: [
-      [1,0,1],
-      [1,2,1],
-      [1,0,1]
+      [1,1,1,1,1],
+      [1,3,1,0,1],
+      [1,0,2,0,1],
+      [1,0,1,0,1],
+      [1,1,1,1,1]
       ]
     }
   },
@@ -69,11 +80,13 @@ var AFrameScene = React.createClass({
     for (var y = 0; y < this.state.grid.length; y++) {
         var row = []
         for (var x = 0; x < this.state.grid[y].length; x++) {
-            var pos = (x-1) + " " + (y-1) + " -10"
+            var pos = (x-2) + " " + (y-2) + " -5"
             if(this.state.grid[y][x] == 1) {
                 row.push(<Cube pos={pos} />)
             } else if(this.state.grid[y][x]==2) {
                 row.push(<PlayerSphere pos={pos} radius="0.25" theColor="black"/>)
+            } else if(this.state.grid[y][x]==3) {
+                row.push(<GoalSphere pos={pos} radius="0.25" />)
             } else {
                 row.push(null)
             }
