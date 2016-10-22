@@ -67,11 +67,15 @@ var AFrameScene = React.createClass({
   getInitialState() {
     return {
       grid: [
-      [1,1,1,1,1],
-      [1,3,1,0,1],
-      [1,0,0,0,1],
-      [1,0,1,2,1],
-      [1,1,1,1,1]
+      [1,1,1,1,1,1,1,1,1],
+      [1,3,1,0,0,0,1,1,1],
+      [1,0,0,0,1,0,0,1,1],
+      [1,0,1,0,1,0,0,1,1],
+      [1,0,0,0,0,0,1,1,1],
+      [1,0,1,0,1,1,1,0,1],
+      [1,1,0,0,0,0,0,0,1],
+      [1,1,1,0,1,1,0,2,1],
+      [1,1,1,1,1,1,1,1,1]
       ]
     }
   },
@@ -214,7 +218,7 @@ var AFrameScene = React.createClass({
   },
   render: function() {
     var sg = this.aStarCreateGrid()
-    var path = this.aStarSearch(sg, sg[3][3], sg[1][1])
+    var path = this.aStarSearch(sg, sg[7][7], sg[1][1])
     return (
       <a-scene>
         <Camera />
