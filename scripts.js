@@ -4,7 +4,8 @@ var ShelterForm = React.createClass({
 	//Initializes variables as empty
 	getInitialState: function(){
 		return{
-			numBeds: 0,
+			occupiedBeds: 0,
+			maxBedCapacity: 0,
 			shelterName: '',
             programTypes: [{text: 'Permanent Supportive Housing', value: 'permanent'}, {text: 'Rapid Rehousing', value: 'rapid'}],
             peopleTypes: [{text: 'Everyone', value: 'e'}, {text: 'Adult Men', value: 'm'}, {text: 'Youth', value: 'y'}, {text: 'Abused Women', value: 'w'}]
@@ -12,17 +13,17 @@ var ShelterForm = React.createClass({
 	},
 
 	//Subtracts one bed, as long as there are beds to subtract (you can't have negative beds)
-	lessBeds: function(){
-		if(this.state.numBeds>0){
-			var newNumBeds = this.state.numBeds - 1
-			this.setState({numBeds: newNumBeds})
+	addOccupant: function(){
+		if(this.state.occupiedBeds>0){
+			var newOccupiedBeds = this.state.occupiedBeds - 1
+			this.setState({occupiedBeds: newOccupiedBeds})
 		}
 	},
 
 	//Adds one bed
-	moreBeds: function(){
-		var newNumBeds = this.state.numBeds + 1
-		this.setState({numBeds: newNumBeds})
+	removeOccupant: function(){
+		var newOccupiedBeds = this.state.occupiedBeds + 1
+		this.setState({occupiedBeds: newOccupiedBeds})
 	},
 
 	//Stores the user input (event) in shelterName
@@ -30,10 +31,15 @@ var ShelterForm = React.createClass({
 		this.setState({shelterName: event.target.value})
 	},
 
-	//When the user clicks the submit button, pass the current value of shelterName, numBeds to whenSubmitClicked 
+	//Stores the max bed capacity
+	shelterMaxCapacity: function(event){
+		this.setState({maxBedCapacity: event.target.value})
+	},
+
+	//When the user clicks the submit button, pass the current values
 	//Sub points to the sub in the ShelterForm tag
 	submitShelter: function(){
-		this.props.sub(this.state.shelterName, this.state.numBeds)
+		this.props.sub(this.state.shelterName, this.state.occupiedBeds, this.state.maxBedCapacity)
 	},
 
     drawOption: function(x) {
@@ -45,8 +51,12 @@ var ShelterForm = React.createClass({
 			<div>
 				Enter name of Shelter: 
 				<input onChange={this.shelterNameChange} />
-
 				<br />
+
+				Enter max occupancy of Shelter:
+				<input onChange={this.shelterMaxCapacity} />
+				<br />
+
                 Choose type of Shelter:
                 <select>
                     {_.map(this.state.programTypes, this.drawOption)}
@@ -59,9 +69,9 @@ var ShelterForm = React.createClass({
                 </select>
 
                 <br />
-				<button onClick={this.lessBeds}>-</button>
-				You have {this.state.numBeds} beds.
-				<button onClick={this.moreBeds}>+</button>
+				<button onClick={this.addOccupant}>-</button>
+				You have {this.state.occupiedBeds} beds and {maxBedCapacity-this.state.occupiedBeds} available beds.
+				<button onClick={this.removeOccupant}>+</button>
 
 				<br />
 				<button onClick={this.submitShelter}>Submit</button>
@@ -78,16 +88,18 @@ var Page = React.createClass({
 		return {
 			submitClicked: false,
 			shelterName: "",
-			numBeds: 0,
+			occupiedBeds: 0,
+			maxBedCapacity: 0,
 		}
 	},
 
 	//When the user has clicked submit, store the passed values
-	whenSubmitClicked: function(shelterName, numBeds){
+	whenSubmitClicked: function(shelterName, occupiedBeds, maxBedCapacity){
 		this.setState({
 			submitClicked: true,
 			shelterName: shelterName,
-			numBeds: numBeds,
+			occupiedBeds: occupiedBeds,
+			maxBedCapacity: 0,
 		})
 	},
 
@@ -103,7 +115,7 @@ var Page = React.createClass({
 				<div>
 					Submitted.
 					<br />
-					{(this.state.shelterName.length > 0) ? this.state.shelterName: "Unnamed shelter"} has {this.state.numBeds} beds.
+					{(this.state.shelterName.length > 0) ? this.state.shelterName: "Unnamed shelter"} has {this.state.occupiedBeds}/{maxBedCapacity} beds.
 				</div>
 			)
 		}
