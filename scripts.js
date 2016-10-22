@@ -5,7 +5,9 @@ var ShelterForm = React.createClass({
 	getInitialState: function(){
 		return{
 			numBeds: 0,
-			shelterName: ''
+			shelterName: '',
+            programTypes: [{text: 'Permanent Supportive Housing', value: 'permanent'}, {text: 'Rapid Rehousing', value: 'rapid'}],
+            peopleTypes: [{text: 'Everyone', value: 'e'}, {text: 'Adult Men', value: 'm'}, {text: 'Youth', value: 'y'}, {text: 'Abused Women', value: 'w'}]
 		}
 	},
 
@@ -34,6 +36,10 @@ var ShelterForm = React.createClass({
 		this.props.sub(this.state.shelterName, this.state.numBeds)
 	},
 
+    drawOption: function(x) {
+        return (<option key={x.value} value={x.value}>{x.text}</option>)
+    },
+
 	render: function(){
 		return(
 			<div>
@@ -41,6 +47,18 @@ var ShelterForm = React.createClass({
 				<input onChange={this.shelterNameChange} />
 
 				<br />
+                Choose type of Shelter:
+                <select>
+                    {_.map(this.state.programTypes, this.drawOption)}
+                </select>
+
+                <br />
+                Who is allowed in your Shelter?
+                <select>
+                    {_.map(this.state.peopleTypes, this.drawOption)}
+                </select>
+
+                <br />
 				<button onClick={this.lessBeds}>-</button>
 				You have {this.state.numBeds} beds.
 				<button onClick={this.moreBeds}>+</button>

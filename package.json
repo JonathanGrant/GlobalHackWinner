@@ -18,6 +18,7 @@
   "homepage": "https://github.com/JonathanGrant/GlobalHackWinner#readme",
   "dependencies": {
     "express": "^4.14.0",
-    "react": "^15.3.2"
+    "react": "^15.3.2",
+    "underscore": "^1.8.3"
   }
 }
