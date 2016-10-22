@@ -1,8 +1,9 @@
 var ShelterForm = React.createClass({
     getInitialState() {
         return {
-            myBeds: 0,
-            myChair: 0
+            numBeds: 0,
+            numChairs: 0,
+            shelterName: ""
         }
     },
     lessBeds: function() {
@@ -21,10 +22,16 @@ var ShelterForm = React.createClass({
         var newNumChairs = this.state.numChairs + 1
         this.setState({numChairs: newNumChairs})
     },
+    onShelterNameChange: function(event) {
+        this.setState({shelterName: event.target.value})
+    },
+    submitShelter: function() {
+        this.props.sub(this.state.shelterName, this.state.numBeds, this.state.numChairs)
+    },
     render: function() {
         return (
             <div>
-                Enter name of Shelter: <input></input>
+                Enter name of Shelter: <input onChange={this.onShelterNameChange}></input>
                 <br/>
                 <button onClick={this.lessBeds}>-</button>
                 You have {this.state.numBeds} beds.
@@ -34,7 +41,7 @@ var ShelterForm = React.createClass({
                 You have {this.state.numChairs} chairs.
                 <button onClick={this.moreChairs}>+</button>
                 <br/>
-                <button onClick={this.props.sub}>Submit</button>
+                <button onClick={this.submitShelter}>Submit</button>
             </div>
             )
     }
@@ -42,11 +49,19 @@ var ShelterForm = React.createClass({
 var Page = React.createClass({
     getInitialState() {
         return {
-            clickedSubmit: false
+            clickedSubmit: false,
+            shelterName: "",
+            numBeds: 0,
+            numChairs: 0
         }
     },
-    whenSubmitClicked: function() {
-        this.setState({clickedSubmit: true})
+    whenSubmitClicked: function(shelterName, numBeds, numChairs) {
+        this.setState({
+            clickedSubmit: true,
+            shelterName: shelterName,
+            numBeds: numBeds,
+            numChairs: numChairs
+        })
     },
     render: function() {
         if(!this.state.clickedSubmit) {
@@ -56,7 +71,7 @@ var Page = React.createClass({
         } else {
             return (
                 <div>
-                    Submitted! Thank you :)
+                    Submitted! Thank you :) {(this.state.shelterName.length > 0) ? this.state.shelterName : "unknown shelter"} with {this.state.numBeds} beds and {this.state.numChairs} chairs.
                 </div>
                 )
         }
